@@ -1,0 +1,235 @@
+# OSH / orchestrate script for Job JOB_1_RUN_ONCE_BANK_BRANCH_To_GEO_AREA compiled at 23:31:33 05 OCT 2018
+#
+# OSH / orchestrate script for Job JOB_1_RUN_ONCE_BANK_BRANCH_To_GEO_AREA compiled at 23:31:29 05 Oct 2018
+#################################################################
+#### STAGE: BANK_BRANCH
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\'1.0\' encoding=\'UTF-16\'?><Properties version=\'1.1\'><Common><Context type=\'int\'>1</Context><Variant type=\'string\'>3.5</Variant><DescriptorVersion type=\'string\'>1.0</DescriptorVersion><PartitionType type=\'int\'>-1</PartitionType><RCP type=\'int\'>0</RCP></Common><Connection><DataSource modified=\'1\' type=\'string\'><![CDATA[JKLW_DB]]></DataSource><Username modified=\'1\' type=\'string\'><![CDATA[db2inst1]]></Username><Password modified=\'1\' type=\'protectedstring\'><![CDATA[{iisenc}uzWEqV7vNOIBNYcTnwBtYg==]]></Password></Connection><Usage><GenerateSQL modified=\'1\' type=\'bool\'><![CDATA[0]]></GenerateSQL><EnableQuotedIDs type=\'bool\'><![CDATA[0]]></EnableQuotedIDs><SQL><SelectStatement collapsed=\'1\' modified=\'1\' type=\'string\'><![CDATA[SELECT distinct  BRANCH_CITY,  BRANCH_STATE, BRANCH_ZIP   FROM    JK_BANK2.BANK_BRANCH]]><ReadStatementFromFile type=\'bool\'><![CDATA[0]]></ReadStatementFromFile><Tables collapsed=\'1\'><Table type=\'string\'><![CDATA[JK_BANK2.BANK_BRANCH]]></Table></Tables><Parameters collapsed=\'1\'></Parameters><Columns collapsed=\'1\'><Column type=\'string\'><![CDATA[BRANCH_ZIP,BRANCH_ZIP,BANK_BRANCH]]></Column><Column type=\'string\'><![CDATA[BRANCH_STATE,BRANCH_STATE,BANK_BRANCH]]></Column><Column type=\'string\'><![CDATA[BRANCH_CITY,BRANCH_CITY,BANK_BRANCH]]></Column></Columns></SelectStatement><EnablePartitioning collapsed=\'1\' type=\'bool\'><![CDATA[0]]></EnablePartitioning></SQL><Transaction><RecordCount type=\'int\'><![CDATA[2000]]></RecordCount><EndOfWave collapsed=\'1\' type=\'int\'><![CDATA[0]]></EndOfWave></Transaction><Session><IsolationLevel type=\'int\'><![CDATA[1]]></IsolationLevel><AutocommitMode type=\'int\'><![CDATA[0]]></AutocommitMode><ArraySize type=\'int\'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\'bool\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\'bool\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\'bool\'><![CDATA[0]]></FailOnCodePageMismatch></SchemaReconciliation><PassLobLocator collapsed=\'1\' type=\'bool\'><![CDATA[0]]></PassLobLocator><CodePage collapsed=\'1\' type=\'int\'><![CDATA[0]]></CodePage></Session><BeforeAfter collapsed=\'1\' type=\'bool\'><![CDATA[0]]></BeforeAfter></Usage></Properties >'
+-connector '{
+variant=\'3.5\',
+library=ccodbc,
+version=1.0,
+variantlist=\'V1;3.5::ccodbc\',
+versionlist=\'1.0\',
+name=ODBCConnector
+}'
+-source 0 '{
+		DSSQLType={BRANCH_CITY=1, BRANCH_STATE=1, BRANCH_ZIP=4},
+		DSSQLPrecision={BRANCH_CITY=128, BRANCH_STATE=20, BRANCH_ZIP=4},
+		DSSchema=\'record
+			(
+			  BRANCH_CITY\:nullable ustring\[128\]\;
+			  BRANCH_STATE\:nullable ustring\[20\]\;
+			  BRANCH_ZIP\:nullable int32\;
+			)\'
+}'
+## General options
+[ident('BANK_BRANCH'); jobmon_ident('BANK_BRANCH')]
+## Outputs
+0> [modify (
+  BRANCH_CITY:nullable ustring[128]=BRANCH_CITY;
+  BRANCH_STATE:nullable ustring[20]=BRANCH_STATE;
+  BRANCH_ZIP:nullable int32=BRANCH_ZIP;
+keep
+   BRANCH_CITY, BRANCH_STATE, BRANCH_ZIP;
+)] 'BANK_BRANCH:Link_BANK_BRANCH.v'
+;
+#################################################################
+#### STAGE: GEO_AREA_JOIN
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\'1.0\' encoding=\'UTF-16\'?><Properties version=\'1.1\'><Common><Context type=\'int\'>1</Context><Variant type=\'string\'>3.5</Variant><DescriptorVersion type=\'string\'>1.0</DescriptorVersion><PartitionType type=\'int\'>-1</PartitionType><RCP type=\'int\'>0</RCP></Common><Connection><DataSource modified=\'1\' type=\'string\'><![CDATA[JKLW_DWH]]></DataSource><Username modified=\'1\' type=\'string\'><![CDATA[db2inst1]]></Username><Password modified=\'1\' type=\'protectedstring\'><![CDATA[{iisenc}uzWEqV7vNOIBNYcTnwBtYg==]]></Password></Connection><Usage><GenerateSQL modified=\'1\' type=\'bool\'><![CDATA[1]]></GenerateSQL><TableName modified=\'1\' type=\'string\'><![CDATA[JKLW.GEO_AREA]]></TableName><EnableQuotedIDs type=\'bool\'><![CDATA[0]]></EnableQuotedIDs><SQL><EnablePartitioning collapsed=\'1\' type=\'bool\'><![CDATA[0]]></EnablePartitioning></SQL><Transaction><RecordCount type=\'int\'><![CDATA[2000]]></RecordCount><EndOfWave collapsed=\'1\' type=\'int\'><![CDATA[0]]></EndOfWave></Transaction><Session><IsolationLevel type=\'int\'><![CDATA[1]]></IsolationLevel><AutocommitMode type=\'int\'><![CDATA[0]]></AutocommitMode><ArraySize type=\'int\'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\'bool\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\'bool\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\'bool\'><![CDATA[0]]></FailOnCodePageMismatch></SchemaReconciliation><PassLobLocator collapsed=\'1\' type=\'bool\'><![CDATA[0]]></PassLobLocator><CodePage collapsed=\'1\' type=\'int\'><![CDATA[0]]></CodePage></Session><BeforeAfter collapsed=\'1\' type=\'bool\'><![CDATA[0]]></BeforeAfter></Usage></Properties >'
+-connector '{
+variant=\'3.5\',
+library=ccodbc,
+version=1.0,
+variantlist=\'V1;3.5::ccodbc\',
+versionlist=\'1.0\',
+name=ODBCConnector
+}'
+-source 0 '{
+		DSIsKey={GEO_AREA_ID=1},
+		DSSQLType={GEO_AREA_ID=4, ZIP_CODE=8, CITY=12},
+		DSSQLPrecision={GEO_AREA_ID=4, ZIP_CODE=8, CITY=100},
+		DSSchema=\'record
+			(
+			  GEO_AREA_ID\:int32\;
+			  ZIP_CODE\:nullable dfloat\;
+			  CITY\:nullable ustring\[max\=100\]\;
+			)\'
+}'
+## General options
+[ident('GEO_AREA_JOIN'); jobmon_ident('GEO_AREA_JOIN')]
+## Outputs
+0> [modify (
+  GEO_AREA_ID:not_nullable int32=GEO_AREA_ID;
+  ZIP_CODE:nullable dfloat=ZIP_CODE;
+  CITY:nullable ustring[max=100]=CITY;
+keep
+   GEO_AREA_ID, ZIP_CODE, CITY;
+)] 'GEO_AREA_JOIN:DSLink86.v'
+;
+#################################################################
+#### STAGE: JKLW_STATE_LOOKUP
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\'1.0\' encoding=\'UTF-16\'?><Properties version=\'1.1\'><Common><Context type=\'int\'>1</Context><Variant type=\'string\'>3.5</Variant><DescriptorVersion type=\'string\'>1.0</DescriptorVersion><PartitionType type=\'int\'>-1</PartitionType><RCP type=\'int\'>0</RCP></Common><Connection><DataSource modified=\'1\' type=\'string\'><![CDATA[JKLW_DWH]]></DataSource><Username modified=\'1\' type=\'string\'><![CDATA[db2inst1]]></Username><Password modified=\'1\' type=\'protectedstring\'><![CDATA[{iisenc}uzWEqV7vNOIBNYcTnwBtYg==]]></Password></Connection><Usage><GenerateSQL modified=\'1\' type=\'bool\'><![CDATA[1]]></GenerateSQL><TableName modified=\'1\' type=\'string\'><![CDATA[JKLW.STATE_LOOKUP]]></TableName><EnableQuotedIDs type=\'bool\'><![CDATA[0]]></EnableQuotedIDs><SQL><EnablePartitioning collapsed=\'1\' type=\'bool\'><![CDATA[0]]></EnablePartitioning></SQL><Transaction><RecordCount type=\'int\'><![CDATA[2000]]></RecordCount><EndOfWave collapsed=\'1\' type=\'int\'><![CDATA[0]]></EndOfWave></Transaction><Session><IsolationLevel type=\'int\'><![CDATA[1]]></IsolationLevel><AutocommitMode type=\'int\'><![CDATA[0]]></AutocommitMode><ArraySize type=\'int\'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\'bool\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\'bool\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\'bool\'><![CDATA[0]]></FailOnCodePageMismatch></SchemaReconciliation><PassLobLocator collapsed=\'1\' type=\'bool\'><![CDATA[0]]></PassLobLocator><CodePage collapsed=\'1\' type=\'int\'><![CDATA[0]]></CodePage></Session><BeforeAfter collapsed=\'1\' type=\'bool\'><![CDATA[0]]></BeforeAfter></Usage></Properties >'
+-connector '{
+variant=\'3.5\',
+library=ccodbc,
+version=1.0,
+variantlist=\'V1;3.5::ccodbc\',
+versionlist=\'1.0\',
+name=ODBCConnector
+}'
+-source 0 '{
+		DSIsKey={STATE_CODE=1},
+		DSSQLType={STATE_CODE=1, STATE=12},
+		DSSQLPrecision={STATE_CODE=2, STATE=20},
+		DSSchema=\'record
+			(
+			  STATE_CODE\:nullable ustring\[2\]\;
+			  STATE\:nullable ustring\[max\=20\]\;
+			)\'
+}'
+## General options
+[ident('JKLW_STATE_LOOKUP'); jobmon_ident('JKLW_STATE_LOOKUP')]
+## Outputs
+0> [modify (
+  STATE_CODE:nullable ustring[2]=STATE_CODE;
+  STATE:nullable ustring[max=20]=STATE;
+keep
+   STATE_CODE, STATE;
+)] 'JKLW_STATE_LOOKUP:DSLink82.v'
+;
+#################################################################
+#### STAGE: Transformer_100
+## Operator
+transform
+## Operator options
+-flag run
+-name 'V0S100_JOB_1_RUN_ONCE_BANK_BRANCH_To_GEO_AREA_Transformer'
+-oldnullhandling
+## General options
+[ident('Transformer_100'); jobmon_ident('Transformer_100')]
+## Inputs
+0< [] 'BANK_BRANCH:Link_BANK_BRANCH.v'
+## Outputs
+0> [] 'Transformer_100:DSLink101.v'
+;
+#################################################################
+#### STAGE: Join_95
+## Operator
+leftouterjoin
+## Operator options
+-key 'ZIP_CODE'
+## General options
+[ident('Join_95'); jobmon_ident('Join_95')]
+## Inputs
+0< [] 'Transformer_100:DSLink101.v'
+1< [] 'GEO_AREA_JOIN:DSLink86.v'
+## Outputs
+0> [modify (
+CITY:nullable string[max=100]=CITY;
+keep
+GEO_AREA_ID,ZIP_CODE,STATE;)] 'Join_95:DSLink103.v'
+;
+#################################################################
+#### STAGE: Transformer_104
+## Operator
+transform
+## Operator options
+-flag run
+-name 'V0S104_JOB_1_RUN_ONCE_BANK_BRANCH_To_GEO_AREA_Transformer'
+-oldnullhandling
+## General options
+[ident('Transformer_104'); jobmon_ident('Transformer_104')]
+## Inputs
+0< [] 'Join_95:DSLink103.v'
+## Outputs
+0> [] 'Transformer_104:DSLink106.v'
+;
+#################################################################
+#### STAGE: Lookup_117
+## Operator
+lookup
+## Operator options
+-table
+-key STATE_CODE
+-ci
+-ifNotFound continue
+## General options
+[ident('Lookup_117'); jobmon_ident('Lookup_117')]
+## Inputs
+0< [] 'Transformer_104:DSLink106.v'
+1< [] 'JKLW_STATE_LOOKUP:DSLink82.v'
+## Outputs
+0> [modify (
+STATE:nullable ustring[max=100]=STATE;
+keep
+ZIP_CODE,CITY,STATE,STATE_CODE;
+)] 'Lookup_117:DSLink83.v'
+;
+#################################################################
+#### STAGE: Transformer_113
+## Operator
+transform
+## Operator options
+-flag run
+-name 'V0S113_JOB_1_RUN_ONCE_BANK_BRANCH_To_GEO_AREA_Transformer'
+-oldnullhandling
+## General options
+[ident('Transformer_113'); jobmon_ident('Transformer_113')]
+## Inputs
+0< [] 'Lookup_117:DSLink83.v'
+## Outputs
+0> [] 'Transformer_113:DSLink114.v'
+;
+#################################################################
+#### STAGE: GEO_AREA
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\'1.0\' encoding=\'UTF-16\'?><Properties version=\'1.1\'><Common><Context type=\'int\'>2</Context><Variant type=\'string\'>3.5</Variant><DescriptorVersion type=\'string\'>1.0</DescriptorVersion><PartitionType type=\'int\'>-1</PartitionType><RCP type=\'int\'>0</RCP></Common><Connection><DataSource modified=\'1\' type=\'string\'><![CDATA[JKLW_DWH]]></DataSource><Username modified=\'1\' type=\'string\'><![CDATA[db2inst1]]></Username><Password modified=\'1\' type=\'protectedstring\'><![CDATA[{iisenc}uzWEqV7vNOIBNYcTnwBtYg==]]></Password></Connection><Usage><WriteMode type=\'int\'><![CDATA[0]]></WriteMode><GenerateSQL modified=\'1\' type=\'bool\'><![CDATA[1]]></GenerateSQL><TableName modified=\'1\' type=\'string\'><![CDATA[JKLW.GEO_AREA]]></TableName><EnableQuotedIDs type=\'bool\'><![CDATA[0]]></EnableQuotedIDs><SQL></SQL><TableAction collapsed=\'1\' modified=\'1\' type=\'int\'><![CDATA[0]]></TableAction><Transaction><RecordCount type=\'int\'><![CDATA[2000]]></RecordCount></Transaction><Session><IsolationLevel type=\'int\'><![CDATA[1]]></IsolationLevel><AutocommitMode type=\'int\'><![CDATA[0]]></AutocommitMode><ArraySize type=\'int\'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\'bool\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\'bool\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\'bool\'><![CDATA[0]]></FailOnCodePageMismatch><DropUnmatchedFields type=\'bool\'><![CDATA[1]]></DropUnmatchedFields></SchemaReconciliation><CodePage collapsed=\'1\' type=\'int\'><![CDATA[0]]></CodePage><FailOnRowErrorPX type=\'bool\'><![CDATA[1]]></FailOnRowErrorPX></Session><Logging collapsed=\'1\'><LogColumnValues collapsed=\'1\' type=\'bool\'><![CDATA[0]]></LogColumnValues></Logging><BeforeAfter collapsed=\'1\' type=\'bool\'><![CDATA[0]]></BeforeAfter></Usage></Properties >'
+-connector '{
+variant=\'3.5\',
+library=ccodbc,
+version=1.0,
+variantlist=\'V1;3.5::ccodbc\',
+versionlist=\'1.0\',
+name=ODBCConnector
+}'
+-target 0 '{
+		DSSQLType={GEOGRAPHY_DIM_ID=8, ZIP_CODE=8, CITY=12, CITY_CODE=12, COUNTRY=12, COUNTRY_CODE=12, COUNTY=12, COUNTY_CODE=12, MSA_CODE=8, MSA_NAME=8, STATE=12, STATE_CODE=12},
+		DSDerivation={GEOGRAPHY_DIM_ID=\'DSLink83\.ZIP_CODE\', ZIP_CODE=\'DSLink83\.ZIP_CODE\', CITY=\'DSLink83\.CITY\', CITY_CODE=\'DSLink83\.CITY\', COUNTRY=\''United States of America'\', COUNTRY_CODE=\''USA'\', COUNTY=\'setNull()\', COUNTY_CODE=\'setNull()\', MSA_CODE=\'setNull()\', MSA_NAME=\'setNull()\', STATE=\'DSLink83\.STATE\', STATE_CODE=\'DSLink83\.STATE_CODE\'},
+		DSSQLPrecision={GEOGRAPHY_DIM_ID=8, ZIP_CODE=8, CITY=100, CITY_CODE=100, COUNTRY=100, COUNTRY_CODE=100, COUNTY=100, COUNTY_CODE=100, MSA_CODE=8, MSA_NAME=8, STATE=100, STATE_CODE=100},
+		DSSchema=\'record
+			(
+			  GEOGRAPHY_DIM_ID\:nullable dfloat\;
+			  ZIP_CODE\:nullable dfloat\;
+			  CITY\:nullable ustring\[max\=100\]\;
+			  CITY_CODE\:nullable ustring\[max\=100\]\;
+			  COUNTRY\:nullable ustring\[max\=100\]\;
+			  COUNTRY_CODE\:nullable ustring\[max\=100\]\;
+			  COUNTY\:nullable ustring\[max\=100\]\;
+			  COUNTY_CODE\:nullable ustring\[max\=100\]\;
+			  MSA_CODE\:nullable dfloat\;
+			  MSA_NAME\:nullable dfloat\;
+			  STATE\:nullable ustring\[max\=100\]\;
+			  STATE_CODE\:nullable ustring\[max\=100\]\;
+			)\'
+}'
+## General options
+[ident('GEO_AREA'); jobmon_ident('GEO_AREA')]
+## Inputs
+0< [] 'Transformer_113:DSLink114.v'
+;
+# End of OSH code
