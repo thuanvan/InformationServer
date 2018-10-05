@@ -1,0 +1,213 @@
+# OSH / orchestrate script for Job archGenData compiled at 18:05:19 05 OCT 2018
+#
+# OSH / orchestrate script for Job archGenData compiled at 18:05:17 05 Oct 2018
+#################################################################
+#### STAGE: FName
+## Operator
+import
+## Operator options
+-schema record
+  {final_delim=end, record_delim='\n', delim='|', quote=double, padchar='#'}
+(
+ Num:int32 {quote=none};
+ FName:string[max=255];
+)
+-file  '/data1/DX445Files/FName.txt'
+-rejects continue
+-reportProgress yes
+-firstLineColumnNames
+## General options
+[ident('FName'); jobmon_ident('FName')]
+## Outputs
+0> [] 'FName:FName.v'
+;
+#################################################################
+#### STAGE: LName
+## Operator
+import
+## Operator options
+-schema record
+  {final_delim=end, record_delim='\n', delim='|', quote=double, padchar='#'}
+(
+ Num:int32 {quote=none};
+ LName:string[max=255];
+)
+-file  '/data1/DX445Files/LName.txt'
+-rejects continue
+-reportProgress yes
+-firstLineColumnNames
+## General options
+[ident('LName'); jobmon_ident('LName')]
+## Outputs
+0> [] 'LName:LName.v'
+;
+#################################################################
+#### STAGE: Row_Generator_0
+## Operator
+generator
+## Operator options
+-schema record
+(
+CustID:int32 {cycle={init=10000}};
+Int1:int32 { limit=29}};
+Intt2:int32 { limit=29}};
+Int3:int32 { limit=29}};
+Int4:int32 { limit=29}};
+MiddleInit:string[1] {alphabet='abcdefghij'};
+Zip:int32 { limit=99999}};
+CustDate:date {random={limit=20000}};
+InsertUpdateFlagInt:int32 {random={limit=2}};
+)
+-records 1000
+## General options
+[ident('Row_Generator_0'); jobmon_ident('Row_Generator_0')]
+## Outputs
+0> [] 'Row_Generator_0:RowGen.v'
+;
+#################################################################
+#### STAGE: Street1
+## Operator
+import
+## Operator options
+-schema record
+  {final_delim=end, record_delim='\n', delim='|', quote=double, padchar='#'}
+(
+ Num:int32 {quote=none};
+ StreetName:string[max=255];
+)
+-file  '/data1/DX445Files/Street1.txt'
+-rejects continue
+-reportProgress yes
+-firstLineColumnNames
+## General options
+[ident('Street1'); jobmon_ident('Street1')]
+## Outputs
+0> [] 'Street1:Street1.v'
+;
+#################################################################
+#### STAGE: Street2
+## Operator
+import
+## Operator options
+-schema record
+  {final_delim=end, record_delim='\n', delim='|', quote=double, padchar='#'}
+(
+ Num:int32 {quote=none};
+ StreetMod:string[max=255];
+)
+-file  '/data1/DX445Files/Street2.txt'
+-rejects continue
+-reportProgress yes
+-firstLineColumnNames
+## General options
+[ident('Street2'); jobmon_ident('Street2')]
+## Outputs
+0> [] 'Street2:Street2.v'
+;
+#################################################################
+#### STAGE: Lookup_1
+## Operator
+lookup
+## Operator options
+-table
+-key Int1
+-table
+-key Intt2
+-table
+-key Int3
+-table
+-key Int4
+-ifNotFound reject
+## General options
+[ident('Lookup_1'); jobmon_ident('Lookup_1')]
+## Inputs
+0< [] 'Row_Generator_0:RowGen.v'
+1< [view (
+  Int1=Num;
+)] 'FName:FName.v'
+2< [view (
+  Intt2=Num;
+)] 'LName:LName.v'
+3< [view (
+  Int3=Num;
+)] 'Street1:Street1.v'
+4< [view (
+  Int4=Num;
+)] 'Street2:Street2.v'
+## Outputs
+0> [modify (
+keep
+CustID,FName,MiddleInit,LName,
+StreetName,StreetMod,Zip,CustDate,
+InsertUpdateFlagInt;)] 'Lookup_1:RowsOut.v'
+1> [] 'Lookup_1:Rejects.v'
+;
+#################################################################
+#### STAGE: Rejects
+## Operator
+export
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=double}
+(
+ CustID:int32;
+ Int1:int32;
+ Intt2:int32;
+ Int3:int32;
+ Int4:int32;
+ MiddleInit:string[1];
+ Zip:int32;
+ CustDate:date;
+ InsertUpdateFlagInt:int32;
+)
+-file '/data1/DX445Files/Temp/RejectsOut.txt'
+-overwrite
+-rejects continue
+## General options
+[ident('Rejects'); jobmon_ident('Rejects')]
+##Inputs
+0< [] 'Lookup_1:Rejects.v'
+;
+#################################################################
+#### STAGE: Transformer_6
+## Operator
+transform
+## Operator options
+-flag run
+-name 'V0S6_archGenData_Transformer'
+-oldnullhandling
+## General options
+[ident('Transformer_6'); jobmon_ident('Transformer_6')]
+## Inputs
+0< [] 'Lookup_1:RowsOut.v'
+## Outputs
+0> [] 'Transformer_6:Customers.v'
+;
+#################################################################
+#### STAGE: Customers
+## Operator
+export
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=none}
+(
+ CustID:int32;
+ FName:string[max=50];
+ MiddleInit:string[1];
+ LName:string[max=50];
+ Address:string[max=200];
+ Zip:int32;
+ CustDate:string[10];
+ DateEntered:string[10];
+ InsertUpdateFlag:string[1];
+)
+-file '[&"TargetPath"]'
+-overwrite
+-rejects continue
+-firstLineColumnNames
+## General options
+[ident('Customers'); jobmon_ident('Customers')]
+##Inputs
+0< [] 'Transformer_6:Customers.v'
+;
+# End of OSH code

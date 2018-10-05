@@ -1,0 +1,53 @@
+//
+// Generated file to implement the V0S6_archGenData_Transformer transform operator.
+//
+
+// define our input/output link names
+inputname 0 RowsOut;
+outputname 0 Customers;
+
+initialize {
+ // define our control variables
+ int8 RowRejected0;
+ int8 NullSetVar0;
+
+ // declare our intermediate variables for this section (1)
+ string InterVar0_0;
+ string InterVar0_1;
+ string InterVar0_2;
+
+ // initialise constant values which require conversion
+ InterVar0_0 = " ";
+ InterVar0_1 = "U";
+ InterVar0_2 = "I";
+}
+
+mainloop {
+
+ // initialise the rejected row variable
+ RowRejected0 = 1;
+
+ // evaluate columns (no constraints) for link: Customers
+ Customers.FName = RowsOut.FName;
+ Customers.MiddleInit = upper_case(RowsOut.MiddleInit);
+ Customers.LName = RowsOut.LName;
+ Customers.Address = ((RowsOut.StreetName + InterVar0_0) + trimc_string(RowsOut.StreetMod));
+ if ((RowsOut.CustDate > current_date())) {
+  Customers.CustDate = string_from_date(current_date());
+ } else {
+  Customers.CustDate = string_from_date(RowsOut.CustDate);
+ }
+ //;
+ Customers.DateEntered = string_from_date(current_date());
+ if ((RowsOut.InsertUpdateFlagInt == 0)) {
+  Customers.InsertUpdateFlag = InterVar0_1;
+ } else {
+  Customers.InsertUpdateFlag = InterVar0_2;
+ }
+ //;
+ writerecord 0;
+ RowRejected0 = 0;
+}
+
+finish {
+}
