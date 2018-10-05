@@ -1,0 +1,62 @@
+# OSH / orchestrate script for Job CreateSeqJob compiled at 22:13:05 05 OCT 2018
+#
+# OSH / orchestrate script for Job CreateSeqJob compiled at 22:13:04 05 Oct 2018
+#################################################################
+#### STAGE: Selling_Group_Mapping
+## Operator
+import
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=double, padchar='#'}
+(
+ Selling_Group_Code:int32 {quote=none};
+ Selling_Group_Desc:string[max=255];
+ Special_Handling_Code:int32 {quote=none};
+ Distr_Chann_Desc:string[max=255];
+)
+-file  '/data1/ISFiles/Selling_Group_Mapping.txt'
+-rejects continue
+-reportProgress yes
+-firstLineColumnNames
+## General options
+[ident('Selling_Group_Mapping'); jobmon_ident('Selling_Group_Mapping')]
+## Outputs
+0> [] 'Selling_Group_Mapping:Selling_Group_Mapping.v'
+;
+#################################################################
+#### STAGE: Copy_2
+## Operator
+copy
+## Operator options
+## General options
+[ident('Copy_2'); jobmon_ident('Copy_2')]
+## Inputs
+0< [] 'Selling_Group_Mapping:Selling_Group_Mapping.v'
+## Outputs
+0> [modify (
+keep
+Selling_Group_Code,Selling_Group_Desc,Special_Handling_Code,Distr_Chann_Desc;
+)] 'Copy_2:Selling_Group_Mapping_Copy.v'
+;
+#################################################################
+#### STAGE: Selling_Group_Mapping_Copy
+## Operator
+export
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=double}
+(
+ Selling_Group_Code:int32 {quote=none};
+ Selling_Group_Desc:string[max=255];
+ Special_Handling_Code:int32 {quote=none};
+ Distr_Chann_Desc:string[max=255];
+)
+-file '/data1/ISFiles/Temp/Selling_Group_Mapping_Copy.txt'
+-overwrite
+-rejects continue
+## General options
+[ident('Selling_Group_Mapping_Copy'); jobmon_ident('Selling_Group_Mapping_Copy')]
+##Inputs
+0< [] 'Copy_2:Selling_Group_Mapping_Copy.v'
+;
+# End of OSH code
