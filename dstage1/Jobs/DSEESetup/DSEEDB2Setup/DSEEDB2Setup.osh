@@ -1,0 +1,76 @@
+# OSH / orchestrate script for Job DSEEDB2Setup compiled at 22:05:24 05 OCT 2018
+#
+# OSH / orchestrate script for Job DSEEDB2Setup compiled at 22:05:22 05 Oct 2018
+#################################################################
+#### STAGE: Row_Generator_0
+## Operator
+generator
+## Operator options
+-schema record
+(
+first_name:string[max=16];
+last_name:string[max=20];
+gender:string[1] { value='F'}};
+birth_date:date {      epoch='1960-01-01'};
+income:decimal[9,2];
+state:string[2] {      value='OH'}};
+)
+-records 10
+## General options
+[ident('Row_Generator_0'); jobmon_ident('Row_Generator_0')]
+## Outputs
+0> [] 'Row_Generator_0:DSLink2.v'
+;
+#################################################################
+#### STAGE: Transformer_4
+## Operator
+transform
+## Operator options
+-flag run
+-name 'V0S4_DSEEDB2Setup_Transformer'
+-oldnullhandling
+## General options
+[ident('Transformer_4'); jobmon_ident('Transformer_4')]
+## Inputs
+0< [] 'Row_Generator_0:DSLink2.v'
+## Outputs
+0> [] 'Transformer_4:DSLink5.v'
+;
+#################################################################
+#### STAGE: DB2_UDB_Enterprise_3
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\'1.0\' encoding=\'UTF-16\'?><Properties version=\'1.1\'><Common><Context type=\'int\'>2</Context><Variant type=\'string\'>9.1</Variant><DescriptorVersion type=\'string\'>1.0</DescriptorVersion><PartitionType type=\'int\'>9</PartitionType><RCP type=\'int\'>0</RCP></Common><Connection><Database type=\'string\'><![CDATA[db2ascl]]></Database></Connection><Usage><WriteMode type=\'int\'><![CDATA[0]]></WriteMode><PrefixForExpressionColumns type=\'string\'><![CDATA[EXPR]]></PrefixForExpressionColumns><TableAction type=\'int\'><![CDATA[2]]><GenerateCreateStatement type=\'bool\'><![CDATA[1]]></GenerateCreateStatement><GenerateDropStatement type=\'bool\'><![CDATA[1]]></GenerateDropStatement></TableAction><Session><SchemaReconciliation><FailOnSizeMismatch type=\'bool\'><![CDATA[0]]></FailOnSizeMismatch><FailOnTypeMismatch type=\'bool\'><![CDATA[0]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\'bool\'><![CDATA[0]]></FailOnCodePageMismatch><DropUnmatchedFields type=\'bool\'><![CDATA[0]]></DropUnmatchedFields></SchemaReconciliation></Session><Transaction><RecordCount type=\'int\'><![CDATA[2000]]></RecordCount></Transaction><GenerateSQL type=\'bool\'><![CDATA[1]]></GenerateSQL><TableName type=\'string\'><![CDATA[CLIENTS]]></TableName></Usage></Properties >'
+-connector '{
+variant=\'9.1\',
+library=ccdb2,
+version=1.0,
+variantlist=\'V1;9.1::ccdb2\',
+versionlist=\'1.0\',
+name=DB2Connector
+}'
+-target 0 '{
+		DSIsKey={first_name=1},
+		DSDescription={first_name=\'first_name: string[max=16] {cycle={      value='John',      value='Susan',      value='William',      value='Ann',      value='Frank',      value='Jane',      value='Seymour',      value='Laura'}}\', gender=\'gender:  string[1] {cycle={value='M', value='F'}}\', birth_date=\'birth_date: date  {random={seed='part',       limit=10000},      epoch='1960-01-01'}\', income=\'income:  decimal[9,2] {random={seed='part',       limit=99999.99}}\'},
+		DSSQLType={first_name=12, last_name=12, gender=1, birth_date=9, income=3, state=1},
+		DSDerivation={first_name=\'DSLink2\.first_name\', last_name=\'DSLink2\.last_name\', gender=\'DSLink2\.gender\', birth_date=\'DSLink2\.birth_date\', income=\'DSLink2\.income\', state=\'DSLink2\.state\'},
+		DSSQLPrecision={first_name=16, last_name=20, gender=1, income=9, state=2},
+		DSSQLScale={income=2},
+		DSSchema=\'record
+			(
+			  first_name\:string\[max\=16\]\;
+			  last_name\:string\[max\=20\]\;
+			  gender\:string\[1\]\;
+			  birth_date\:date\;
+			  income\:decimal\[9\,2\]\;
+			  state\:string\[2\]\;
+			)\'
+}'
+## General options
+[ident('DB2_UDB_Enterprise_3'); jobmon_ident('DB2_UDB_Enterprise_3')]
+## Inputs
+0< [] 'Transformer_4:DSLink5.v'
+;
+# End of OSH code

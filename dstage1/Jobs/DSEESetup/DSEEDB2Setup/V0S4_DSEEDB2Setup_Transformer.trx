@@ -1,0 +1,27 @@
+//
+// Generated file to implement the V0S4_DSEEDB2Setup_Transformer transform operator.
+//
+
+// define our input/output link names
+inputname 0 DSLink2;
+outputname 0 DSLink5;
+
+initialize {
+ // define our control variables
+ int8 RowRejected0;
+ int8 NullSetVar0;
+
+}
+
+mainloop {
+
+ // initialise the rejected row variable
+ RowRejected0 = 1;
+
+ // evaluate columns (no constraints) for link: DSLink5
+ writerecord 0;
+ RowRejected0 = 0;
+}
+
+finish {
+}
