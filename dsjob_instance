@@ -1,0 +1,10 @@
+#!/bin/bash
+. /home/dsadm/.bash_profile
+
+INVOCATION=(1 2 3 4 5)
+
+cd $DSHOME/bin
+for id in ${INVOCATION[@]}
+do
+        ./dsjob -run -mode NORMAL -wait test demo.$id
+done
