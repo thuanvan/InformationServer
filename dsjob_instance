@@ -1,11 +1,14 @@
 #!/bin/bash
-. /home/dsadm/.bash_profile
-#source dsenv
+# Run 5 iterations of job 
+# Random integer for parameter NumRow
+source /opt/IBM/InformationServer/Server/DSEngine/dsenv > /dev/null 2>&1  
 
 INVOCATION=(1 2 3 4 5)
 
 cd $DSHOME/bin
 for id in ${INVOCATION[@]}
 do
-        ./dsjob -run -mode NORMAL -wait test demo.$id
+        NumRows=$(( ( RANDOM % 1000000 )  + 1 ))
+        echo NumRows=$NumRows
+        ./dsjob -run -mode NORMAL -wait -param NumRows=$NumRows dstage1 demo.$id
 done
